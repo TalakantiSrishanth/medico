@@ -14,7 +14,7 @@ if (!global._pool) {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     ssl: {
-      ca: fs.readFileSync(path.join(__dirname, "certs", "ca.pem")),
+      ca: process.env.DB_CA,
       rejectUnauthorized: true,
     },
   });
