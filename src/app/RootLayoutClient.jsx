@@ -9,7 +9,7 @@ import AdminSidebar from "./components/adminSidebar";
 export default function RootLayoutClient({ children }) {
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith("/adminDashboard");
-
+  
   return (
     <>
       <Navbar />

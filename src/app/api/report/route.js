@@ -18,15 +18,15 @@ export async function POST(req) {
   }
 }
 
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const user_id = searchParams.get("user_id");
 
     const [rows] = await pool.query(
-      `SELECT ur.*, ar.typical_treatments, ar.notes 
+      `SELECT ur.*
        FROM user_reports ur
-       LEFT JOIN admin_responses ar ON ur.id = ar.report_id
        WHERE ur.user_id = ? 
        ORDER BY ur.created_at DESC`,
       [user_id]

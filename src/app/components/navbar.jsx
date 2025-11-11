@@ -4,11 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-
+  const pathname=usePathname();
+   useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user);
+  }, [pathname]);
   
   useEffect(() => {
     const user = localStorage.getItem("user");

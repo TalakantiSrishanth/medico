@@ -1,9 +1,5 @@
 import mysql from "mysql2/promise";
-import fs from "fs";
-import path from "path";
-
 const __dirname = process.cwd();
-
 let pool;
 
 if (!global._pool) {
