@@ -13,12 +13,6 @@ export default function Navbar() {
     const user = localStorage.getItem("user");
     setIsLoggedIn(!!user);
   }, [pathname]);
-  
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if(user)setIsLoggedIn(true);
-    else setIsLoggedIn(false);
-  }, []);
 
 
   function handleLogout() {
