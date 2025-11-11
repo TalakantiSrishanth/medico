@@ -9,12 +9,13 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
   const pathname=usePathname();
+  const isAdmin=pathname.startsWith("/adminDashboard");
    useEffect(() => {
     const user = localStorage.getItem("user");
     setIsLoggedIn(!!user);
   }, [pathname]);
 
-
+ const L=isAdmin?"/adminDashboard":"/"
   function handleLogout() {
     localStorage.clear();
     setIsLoggedIn(false);
@@ -25,7 +26,7 @@ export default function Navbar() {
     <nav className="flex justify-between items-center p-4 bg-slate-800 text-white">
      
       <div className="flex items-center gap-2">
-        <Link href="/" className="flex gap-2 items-center">
+        <Link href={L} className="flex gap-2 items-center">
           <Image src="/medico.svg" alt="Logo" width={40} height={40} />
           <h1 className="font-bold text-2xl">Medico</h1>
         </Link>
