@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,18 +8,28 @@ export default function Issue() {
   const [symptom, setSymptom] = useState("");
   const [severity, setSeverity] = useState("Mild");
   const [since, setSince] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      toast.warn("Please login first.");
+      redirect("/login");
+      return;
+    }
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setSubmitting(true);
 
     try {
-
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) {
-        alert("Please log in first!");
+        toast.warn("Please log in first!");
+        redirect("/login");
         return;
       }
-
 
       const res = await axios.post("/api/report", {
         user_id: user.id,
@@ -31,7 +40,7 @@ export default function Issue() {
 
       const data = res.data;
       if (data.success) {
-        toast.success("Issue submitted successfully")
+        toast.success("Issue submitted successfully");
         setSymptom("");
         setSeverity("Mild");
         setSince("");
@@ -41,72 +50,72 @@ export default function Issue() {
     } catch (err) {
       console.error("Submit Error:", err);
       toast.error("Something went wrong while submitting the issue.");
+    } finally {
+      setSubmitting(false);
     }
   }
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      toast.warn("Please login first.");
-      redirect("/login");
-      return;
-    }
-  }, [])
+
   return (
-    <div className="h-full bg-zinc-500 flex justify-center items-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800 p-6">
       <form
-        className="border-2 border-solid space-y-7 p-6 rounded-lg bg-white/20"
         onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white/90 p-6 rounded-xl shadow-lg"
+        aria-label="Report an issue form"
       >
-        <div className="flex flex-col">
-          <label htmlFor="symptom" className="font-semibold text-white">
-            Enter your symptom
-          </label>
-          <input
-            type="text"
-            id="symptom"
-            value={symptom}
-            onChange={(e) => setSymptom(e.target.value)}
-            required
-            className="p-2 rounded text-black"
-          />
-        </div>
+        <h2 className="text-xl font-semibold text-slate-900 mb-4">Report an issue</h2>
 
-        <div className="flex flex-col">
-          <label htmlFor="severity" className="font-semibold text-white">
-            Choose Your Severity
-          </label>
-          <select
-            id="severity"
-            value={severity}
-            onChange={(e) => setSeverity(e.target.value)}
-            className="border p-2 rounded text-black"
-          >
-            <option value="Mild">Mild</option>
-            <option value="Moderate">Moderate</option>
-            <option value="Severe">Severe</option>
-          </select>
-        </div>
+        <label htmlFor="symptom" className="block text-sm font-medium text-slate-700">
+          Symptom
+        </label>
+        <input
+          id="symptom"
+          type="text"
+          value={symptom}
+          onChange={(e) => setSymptom(e.target.value)}
+          required
+          className="mt-1 mb-4 w-full p-3 rounded-md border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-medico-500"
+          placeholder="Describe your symptom (e.g., headache, fever)"
+        />
 
-        <div className="flex flex-col">
-          <label htmlFor="since" className="font-semibold text-white">
-            Since (in days)
-          </label>
-          <input
-            type="number"
-            id="since"
-            placeholder="e.g., 3"
-            value={since}
-            onChange={(e) => setSince(e.target.value)}
-            className="p-2 rounded text-black"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg"
+        <label htmlFor="severity" className="block text-sm font-medium text-slate-700">
+          Severity
+        </label>
+        {/* Use explicit light background & dark text so options are always visible */}
+        <select
+          id="severity"
+          value={severity}
+          onChange={(e) => setSeverity(e.target.value)}
+          className="mt-1 mb-4 w-full p-3 rounded-md border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-medico-500"
         >
-          Submit
-        </button>
+          <option value="Mild">Mild</option>
+          <option value="Moderate">Moderate</option>
+          <option value="Severe">Severe</option>
+        </select>
+
+        <label htmlFor="since" className="block text-sm font-medium text-slate-700">
+          Since (days)
+        </label>
+        <input
+          id="since"
+          type="number"
+          value={since}
+          onChange={(e) => setSince(e.target.value)}
+          className="mt-1 mb-6 w-full p-3 rounded-md border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-medico-500"
+          placeholder="e.g., 3"
+          min="0"
+        />
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={submitting}
+            className={`px-4 py-2 rounded-md font-medium ${
+              submitting ? "bg-gray-400 text-white cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
+          >
+            {submitting ? "Submitting..." : "Submit"}
+          </button>
+        </div>
       </form>
     </div>
   );

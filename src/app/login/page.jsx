@@ -1,30 +1,38 @@
 "use client";
+import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  function validEmail(e) {
+    return /\S+@\S+\.\S+/.test(e);
+  }
 
   async function handleLogin(e) {
     e.preventDefault();
-
+    if (!validEmail(email)) {
+      toast.error("Please enter a valid email.");
+      return;
+    }
+    setLoading(true);
     try {
       const res = await axios.post("/api/auth", {
         type: "login",
         email,
         password,
       });
-
       const data = res.data;
 
       if (data.success && data.user.role === "user") {
         localStorage.setItem("user", JSON.stringify(data.user));
-        toast.success(`Welcome, ${data.user.name}!`);
+        toast.success(`Welcome, ${data.user.name || "user"}!`);
         router.push("/");
       } else if (data.user?.role === "admin") {
         toast.warn("Admins must login via Admin Login page.");
@@ -33,43 +41,59 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login Error:", err);
-      toast.error("Enter valid credentitals");
+      toast.error("Invalid credentials or server error");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white p-6">
       <form
         onSubmit={handleLogin}
-        className="flex flex-col space-y-3 bg-white/10 p-8 rounded-xl w-80"
+        className="w-full max-w-sm bg-white/6 backdrop-blur-md border border-white/8 rounded-xl p-6 space-y-4 shadow"
+        aria-label="User login form"
       >
         <h1 className="text-2xl font-bold text-center">User Login</h1>
 
+        <label className="text-sm">Email</label>
         <input
           type="email"
-          placeholder="Email"
-          className="p-2 rounded text-white"
+          placeholder="you@college.edu"
+          className="w-full p-3 rounded-md bg-transparent border border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-medico-500 outline-none"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          aria-required
         />
+
+        <label className="text-sm">Password</label>
         <input
           type="password"
-          placeholder="Password"
-          className="p-2 rounded text-white"
+          placeholder="Enter your password"
+          className="w-full p-3 rounded-md bg-transparent border border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-medico-500 outline-none"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          aria-required
         />
 
-        <button className="bg-blue-600 hover:bg-blue-700 p-2 rounded">
-          Login
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-60"
+        >
+          {loading ? "Signing in..." : "Login"}
         </button>
 
-        <p className="text-center text-sm">
-          Don’t have an account?{" "}
-          <Link href="/signup" className="text-blue-400 hover:text-blue-300">
-            Signup
+        <div className="flex items-center justify-between text-sm text-gray-300">
+          <Link href="/signup" className="text-blue-300 hover:underline">
+            Create account
           </Link>
-        </p>
+          <Link href="/forgot" className="text-gray-300 hover:underline">
+            Forgot password?
+          </Link>
+        </div>
       </form>
     </div>
   );
