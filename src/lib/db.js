@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-const __dirname = process.cwd();
 let pool;
 
 if (!global._pool) {

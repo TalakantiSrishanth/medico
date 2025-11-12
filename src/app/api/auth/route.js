@@ -9,7 +9,7 @@ export async function POST(req) {
         return Response.json({ error: "Email already registered" }, { status: 400 });
       }
 
-      await pool.query(
+      await pool.query( 
         "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')",
         [name, email, password]
       );

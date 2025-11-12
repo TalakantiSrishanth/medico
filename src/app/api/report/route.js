@@ -17,9 +17,7 @@ export async function POST(req) {
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
-
-
-export async function GET(req) {
+export async function GET(req){
   try {
     const { searchParams } = new URL(req.url);
     const user_id = searchParams.get("user_id");
