@@ -18,9 +18,9 @@ export default function Card({ data }) {
       <p className="text-xs text-gray-400 mt-2 italic">{data.notes}</p>
 
       <div className="mt-3 flex items-center gap-2">
-        <Link className="text-sm text-blue-300 hover:underline" href={`/Status/${data.id}`}>View</Link>
+      
         <span className="text-xs text-gray-500">•</span>
-        <button className="text-sm bg-white/10 px-2 py-1 rounded hover:bg-white/12">Report</button>
+        
       </div>
     </article>
   );

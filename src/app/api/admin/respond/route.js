@@ -8,9 +8,8 @@ export async function POST(req) {
       "INSERT INTO admin_responses (report_id, symptom, severity, typical_treatments, notes) VALUES (?, ?, ?, ?, ?)",
       [report_id, symptom, severity, JSON.stringify(treatments), notes]
     );
-
+    
     await pool.query("UPDATE user_reports SET status='Resolved' WHERE id=?", [report_id]);
-
     return Response.json({ success: true });
   } catch (err) {
     console.error("Admin Respond Error:", err);

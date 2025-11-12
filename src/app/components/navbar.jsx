@@ -84,9 +84,6 @@ export default function Navbar() {
 
       {/* Right */}
       <div className="flex items-center gap-4">
-        <button onClick={toggleDark} aria-label="Toggle theme" className="p-2 rounded-md hover:bg-white/5 transition">
-          {dark ? "🌙" : "☀️"}
-        </button>
 
         {isLoggedIn ? (
           <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">Logout</button>

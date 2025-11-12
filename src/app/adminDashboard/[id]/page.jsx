@@ -31,7 +31,6 @@ export default function AdminReportPage() {
       const rep = res.data?.report ?? res.data;
       setReport(rep || null);
 
-      // prefill form if unresolved OR keep previous values if already set
       const treatmentsArray =
         rep?.typical_treatments ||
         rep?.treatments ||
@@ -147,7 +146,7 @@ export default function AdminReportPage() {
 
     try {
       const payload = {
-        id: report.id,
+        report_id: report.id,
         status: "Resolved",
         typical_treatments: treatmentsText
           .split(",")
@@ -171,6 +170,7 @@ export default function AdminReportPage() {
         toast.success("Report resolved successfully");
         // re-fetch fresh report to show resolved view
         await fetchReport();
+        router.push("/adminDashboard");
       } else {
         toast.error(res.data?.error || "Failed to resolve report");
       }
@@ -179,6 +179,7 @@ export default function AdminReportPage() {
       toast.error("Something went wrong while resolving");
     } finally {
       setSubmitting(false);
+      
     }
   }
 
@@ -202,7 +203,7 @@ export default function AdminReportPage() {
               onChange={(e) => setTreatmentsText(e.target.value)}
               placeholder="e.g., Paracetamol 500mg, Rest, Hydration"
               className="w-full p-3 rounded-md bg-transparent border border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-medico-500 outline-none"
-            />
+           required />
           </label>
 
           <label className="block">
@@ -213,7 +214,7 @@ export default function AdminReportPage() {
               rows={6}
               placeholder="Add any additional advice or follow-up instructions..."
               className="w-full p-3 rounded-md bg-transparent border border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-medico-500 outline-none"
-            />
+             />
           </label>
 
           <div className="flex justify-end gap-3">

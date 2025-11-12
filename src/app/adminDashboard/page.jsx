@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { useParams, usePathname } from "next/navigation";
 
 export default function AdminDashboard() {
   const [reports, setReports] = useState([]);
-
+  const pathname=usePathname()
   useEffect(() => {
     async function fetchReports() {
       try {
@@ -18,7 +19,7 @@ export default function AdminDashboard() {
       }
     }
     fetchReports();
-  }, []);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-8">
